@@ -24,3 +24,5 @@ frontend/pubspec.lock
 # Secrets
 *.json
 !frontend/web/manifest.json
+
+.agents/
