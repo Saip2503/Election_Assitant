@@ -1,0 +1,53 @@
+# Build v2.1 - Triggering fresh sync
+steps:
+  # Step 0: Substitute placeholders in index.html
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        sed -i -e "s/GOOGLE_CLIENT_ID_PLACEHOLDER/781943476215-ls2li6q2822im54l3v6ubl79sg7v2l22.apps.googleusercontent.com/g" \
+               -e "s/GOOGLE_MAPS_API_KEY_PLACEHOLDER/AIzaSyDEavEM7lD3pXcQzrltfYYiXj3KEJ2eCkU/g" \
+               frontend/web/index.html
+
+  # Step 1: Build Flutter Web
+  - name: 'ghcr.io/cirruslabs/flutter:stable'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        cd frontend && \
+        flutter build web --release --base-href / && \
+        mkdir -p ../backend/static && \
+        cp -r build/web/. ../backend/static/ && \
+        echo "Files in backend/static:" && \
+        ls -R ../backend/static
+
+  # Step 2: Build Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/${PROJECT_ID}/election-assistant-api', './backend']
+
+  # Step 3: Push Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/${PROJECT_ID}/election-assistant-api']
+
+  # Step 4: Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'election-assistant-api'
+      - '--image'
+      - 'gcr.io/${PROJECT_ID}/election-assistant-api'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--set-env-vars'
+      - 'VERTEX_AI_PROJECT_ID=${PROJECT_ID},VERTEX_AI_LOCATION=us-central1'
+
+timeout: '1200s'
+options:
+  logging: CLOUD_LOGGING_ONLY
