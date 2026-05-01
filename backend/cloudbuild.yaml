@@ -1,0 +1,59 @@
+steps:
+  # 0. Replace Secret Placeholders in index.html
+  - name: "gcr.io/cloud-builders/gcloud"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        sed -i "s/GOOGLE_CLIENT_ID_PLACEHOLDER/$_GOOGLE_CLIENT_ID/g" frontend/web/index.html
+        sed -i "s/GOOGLE_MAPS_API_KEY_PLACEHOLDER/$_GOOGLE_MAPS_API_KEY/g" frontend/web/index.html
+
+  # 1. Build Flutter Web using a pre-built image
+  - name: "ghcr.io/cirruslabs/flutter:stable"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        cd frontend
+        flutter build web --release
+        mkdir -p ../backend/static
+        cp -r build/web/* ../backend/static/
+
+  # 2. Build the Docker image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "gcr.io/$PROJECT_ID/election-assistant-api",
+        "./backend",
+      ]
+
+  # 3. Push the image to Container Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "gcr.io/$PROJECT_ID/election-assistant-api"]
+
+  # 4. Deploy to Cloud Run
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      [
+        "run",
+        "deploy",
+        "election-assistant-api",
+        "--image",
+        "gcr.io/$PROJECT_ID/election-assistant-api",
+        "--region",
+        "us-central1",
+        "--platform",
+        "managed",
+        "--allow-unauthenticated",
+        "--set-env-vars",
+        "VERTEX_AI_PROJECT_ID=$PROJECT_ID,VERTEX_AI_LOCATION=us-central1",
+      ]
+
+images:
+  - "gcr.io/$PROJECT_ID/election-assistant-api"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
