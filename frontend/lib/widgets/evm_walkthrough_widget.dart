@@ -69,14 +69,19 @@ class _EVMWalkthroughWidgetState extends ConsumerState<EVMWalkthroughWidget> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: GestureDetector(
-                        onTap: () => setState(() => _currentStep = i),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 250),
-                          height: isCurrent ? 6 : 4,
-                          decoration: BoxDecoration(
-                            color: active ? CivicPulseTheme.primary : const Color(0xFFC3C6D1),
-                            borderRadius: BorderRadius.circular(9999),
+                      child: Semantics(
+                        button: true,
+                        label: 'Go to step ${i + 1} of ${steps.length}: ${steps[i].title}',
+                        selected: isCurrent,
+                        child: GestureDetector(
+                          onTap: () => setState(() => _currentStep = i),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 250),
+                            height: isCurrent ? 6 : 4,
+                            decoration: BoxDecoration(
+                              color: active ? CivicPulseTheme.primary : const Color(0xFFC3C6D1),
+                              borderRadius: BorderRadius.circular(9999),
+                            ),
                           ),
                         ),
                       ),
@@ -167,38 +172,50 @@ class _EVMWalkthroughWidgetState extends ConsumerState<EVMWalkthroughWidget> {
           Row(
             children: [
               if (_currentStep > 0)
-                OutlinedButton.icon(
-                  onPressed: () => setState(() => _currentStep--),
-                  icon: const Icon(Icons.arrow_back, size: 16),
-                  label: Text(ref.tr('previous')),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: CivicPulseTheme.primary,
-                    side: const BorderSide(color: CivicPulseTheme.primary),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9999)),
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                Semantics(
+                  button: true,
+                  label: 'Previous: Step $_currentStep of ${steps.length}',
+                  child: OutlinedButton.icon(
+                    onPressed: () => setState(() => _currentStep--),
+                    icon: const Icon(Icons.arrow_back, size: 16),
+                    label: Text(ref.tr('previous')),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: CivicPulseTheme.primary,
+                      side: const BorderSide(color: CivicPulseTheme.primary),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9999)),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    ),
                   ),
                 ),
               const Spacer(),
               if (_currentStep < steps.length - 1)
-                FilledButton.icon(
-                  onPressed: () => setState(() => _currentStep++),
-                  icon: const Icon(Icons.arrow_forward, size: 16),
-                  label: Text(ref.tr('next_step')),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: CivicPulseTheme.primary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9999)),
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                Semantics(
+                  button: true,
+                  label: 'Next: Step ${_currentStep + 2} of ${steps.length}',
+                  child: FilledButton.icon(
+                    onPressed: () => setState(() => _currentStep++),
+                    icon: const Icon(Icons.arrow_forward, size: 16),
+                    label: Text(ref.tr('next_step')),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: CivicPulseTheme.primary,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9999)),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    ),
                   ),
                 )
               else
-                FilledButton.icon(
-                  onPressed: () => setState(() => _currentStep = 0),
-                  icon: const Icon(Icons.check_circle_outline, size: 16),
-                  label: Text(ref.tr('got_it')),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: CivicPulseTheme.tertiaryContainer,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9999)),
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                Semantics(
+                  button: true,
+                  label: 'Finish: EVM walkthrough complete',
+                  child: FilledButton.icon(
+                    onPressed: () => setState(() => _currentStep = 0),
+                    icon: const Icon(Icons.check_circle_outline, size: 16),
+                    label: Text(ref.tr('got_it')),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: CivicPulseTheme.tertiaryContainer,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9999)),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    ),
                   ),
                 ),
             ],

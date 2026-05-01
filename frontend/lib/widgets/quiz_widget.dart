@@ -103,9 +103,13 @@ class _QuizWidgetState extends ConsumerState<QuizWidget> {
               Text(ref.tr('question_count', args: {'current': '${_currentIndex + 1}', 'total': '${widget.questions.length}'}),
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(color: CivicPulseTheme.outline)),
               const Spacer(),
-              Text('Score: $_score ✓',
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: CivicPulseTheme.primary, fontWeight: FontWeight.w600)),
+              Semantics(
+                liveRegion: true,
+                label: 'Current score: $_score correct',
+                child: Text('Score: $_score ✓',
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    color: CivicPulseTheme.primary, fontWeight: FontWeight.w600)),
+              ),
             ],
           ),
           const SizedBox(height: 6),
@@ -164,44 +168,53 @@ class _QuizWidgetState extends ConsumerState<QuizWidget> {
               textColor = CivicPulseTheme.primary;
             }
 
-            return GestureDetector(
-              onTap: _showExplanation ? null : () => setState(() => _selectedAnswer = i),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                margin: const EdgeInsets.only(bottom: 10),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                decoration: BoxDecoration(
-                  color: bgColor ?? Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: borderColor, width: isSelected || (_showExplanation && isCorrect) ? 2 : 1),
-                ),
-                child: Row(
-                  children: [
-                    // Option letter
-                    Container(
-                      width: 28, height: 28,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: isSelected && !_showExplanation ? CivicPulseTheme.primary : Colors.transparent,
-                        border: Border.all(
-                          color: isSelected || (_showExplanation && isCorrect) ? Colors.transparent : const Color(0xFFC3C6D1),
+            return Semantics(
+              button: !_showExplanation,
+              selected: isSelected,
+              label: 'Option ${String.fromCharCode(65 + i)}: ${options[i]}'
+                  '${_showExplanation && isCorrect ? ". Correct answer" : ""}'
+                  '${_showExplanation && isSelected && !isCorrect ? ". Your answer – incorrect" : ""}',
+              child: GestureDetector(
+                onTap: _showExplanation ? null : () => setState(() => _selectedAnswer = i),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  margin: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  decoration: BoxDecoration(
+                    color: bgColor ?? Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: borderColor, width: isSelected || (_showExplanation && isCorrect) ? 2 : 1),
+                  ),
+                  child: Row(
+                    children: [
+                      // Option letter
+                      ExcludeSemantics(
+                        child: Container(
+                          width: 28, height: 28,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: isSelected && !_showExplanation ? CivicPulseTheme.primary : Colors.transparent,
+                            border: Border.all(
+                              color: isSelected || (_showExplanation && isCorrect) ? Colors.transparent : const Color(0xFFC3C6D1),
+                            ),
+                          ),
+                          child: Center(child: Text(
+                            String.fromCharCode(65 + i),
+                            style: TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.w700,
+                              color: isSelected && !_showExplanation ? Colors.white : (textColor ?? CivicPulseTheme.outline)),
+                          )),
                         ),
                       ),
-                      child: Center(child: Text(
-                        String.fromCharCode(65 + i),
-                        style: TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.w700,
-                          color: isSelected && !_showExplanation ? Colors.white : (textColor ?? CivicPulseTheme.outline)),
-                      )),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(child: Text(options[i],
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                        color: textColor ?? const Color(0xFF191C1D),
-                        height: 1.4))),
-                    if (trailingIcon != null) trailingIcon,
-                  ],
+                      const SizedBox(width: 12),
+                      Expanded(child: Text(options[i],
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                          color: textColor ?? const Color(0xFF191C1D),
+                          height: 1.4))),
+                      if (trailingIcon != null) ExcludeSemantics(child: trailingIcon!),
+                    ],
+                  ),
                 ),
               ),
             );

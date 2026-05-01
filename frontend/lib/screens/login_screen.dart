@@ -15,11 +15,13 @@ class LoginScreen extends ConsumerWidget {
         children: [
           // Background Image
           Positioned.fill(
-            child: Image.asset(
-              'assets/images/hero_bg.webp',
-              fit: BoxFit.cover,
-              color: Colors.black.withValues(alpha: 0.5),
-              colorBlendMode: BlendMode.darken,
+            child: ExcludeSemantics(
+              child: Image.asset(
+                'assets/images/hero_bg.webp',
+                fit: BoxFit.cover,
+                color: Colors.black.withValues(alpha: 0.5),
+                colorBlendMode: BlendMode.darken,
+              ),
             ),
           ),
           // Language Selector
@@ -47,7 +49,11 @@ class LoginScreen extends ConsumerWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Image.asset('assets/images/logo.webp', height: 80),
+                  Semantics(
+                    label: 'Election Dost logo',
+                    image: true,
+                    child: Image.asset('assets/images/logo.webp', height: 80),
+                  ),
                   const SizedBox(height: 24),
                   Text(
                     ref.tr('app_title'),
@@ -65,29 +71,36 @@ class LoginScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 48),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 56,
-                    child: ElevatedButton.icon(
-                      onPressed: () => ref.read(authProvider.notifier).signIn(),
-                      icon: Image.network(
-                        'https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg',
-                        height: 24,
-                      ),
-                      label: Text(
-                        ref.tr('login_google_full'),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
+                  Semantics(
+                    button: true,
+                    label: ref.tr('login_google_full'),
+                    hint: 'Authenticate with your Google account',
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: ElevatedButton.icon(
+                        onPressed: () => ref.read(authProvider.notifier).signIn(),
+                        icon: ExcludeSemantics(
+                          child: Image.network(
+                            'https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg',
+                            height: 24,
+                          ),
                         ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.black87,
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          side: const BorderSide(color: Color(0xFFE0E0E0)),
+                        label: Text(
+                          ref.tr('login_google_full'),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black87,
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            side: const BorderSide(color: Color(0xFFE0E0E0)),
+                          ),
                         ),
                       ),
                     ),

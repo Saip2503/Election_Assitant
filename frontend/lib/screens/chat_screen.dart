@@ -182,16 +182,20 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           QuickActionChips(onActionSelected: _sendMessage),
           // Chat messages
           Expanded(
-            child: messages.isEmpty
-                ? _buildEmptyState(context)
-                : ListView.builder(
-                    controller: _scrollController,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    itemCount: messages.length,
-                    itemBuilder: (context, index) {
-                      return ChatBubble(message: messages[index]);
-                    },
-                  ),
+            child: Semantics(
+              label: 'Chat messages',
+              liveRegion: true,
+              child: messages.isEmpty
+                  ? _buildEmptyState(context)
+                  : ListView.builder(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      itemCount: messages.length,
+                      itemBuilder: (context, index) {
+                        return ChatBubble(message: messages[index]);
+                      },
+                    ),
+            ),
           ),
           // Input area
           _buildInputArea(context),
@@ -271,41 +275,50 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       child: Row(
         children: [
           Expanded(
-            child: TextField(
-              controller: _controller,
-              decoration: InputDecoration(
-                hintText: ref.tr('chat_placeholder'),
-                hintStyle: TextStyle(color: CivicPulseTheme.outline),
-                filled: true,
-                fillColor: CivicPulseTheme.background,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(9999),
-                  borderSide: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
+            child: Semantics(
+              textField: true,
+              label: 'Ask Election Dost a question',
+              hint: ref.tr('chat_placeholder'),
+              child: TextField(
+                controller: _controller,
+                decoration: InputDecoration(
+                  hintText: ref.tr('chat_placeholder'),
+                  hintStyle: TextStyle(color: CivicPulseTheme.outline),
+                  filled: true,
+                  fillColor: CivicPulseTheme.background,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(9999),
+                    borderSide: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(9999),
+                    borderSide: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(9999),
+                    borderSide: const BorderSide(color: CivicPulseTheme.primary, width: 2),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                 ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(9999),
-                  borderSide: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(9999),
-                  borderSide: const BorderSide(color: CivicPulseTheme.primary, width: 2),
-                ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                onSubmitted: (_) => _sendMessage(),
               ),
-              onSubmitted: (_) => _sendMessage(),
             ),
           ),
           const SizedBox(width: 12),
-          FilledButton(
-            onPressed: () => _sendMessage(),
-            style: FilledButton.styleFrom(
-              backgroundColor: CivicPulseTheme.primary,
-              foregroundColor: Colors.white,
-              shape: const CircleBorder(),
-              padding: const EdgeInsets.all(14),
-              elevation: 0,
+          Semantics(
+            button: true,
+            label: 'Send message',
+            child: FilledButton(
+              onPressed: () => _sendMessage(),
+              style: FilledButton.styleFrom(
+                backgroundColor: CivicPulseTheme.primary,
+                foregroundColor: Colors.white,
+                shape: const CircleBorder(),
+                padding: const EdgeInsets.all(14),
+                elevation: 0,
+              ),
+              child: const Icon(Icons.send, size: 20),
             ),
-            child: const Icon(Icons.send, size: 20),
           ),
         ],
       ),
@@ -334,36 +347,43 @@ class _SidebarNavItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return InkWell(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.white.withValues(alpha: 0.12) : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
-          border: isSelected
-              ? Border(left: BorderSide(color: CivicPulseTheme.secondaryContainer, width: 3))
-              : null,
-        ),
-        child: Row(
-          children: [
-            Icon(
-              item.icon,
-              color: isSelected ? Colors.white : Colors.white.withValues(alpha: 0.6),
-              size: 20,
-            ),
-            const SizedBox(width: 12),
-            Text(
-              ref.tr(item.l10nKey),
-              style: TextStyle(
-                color: isSelected ? Colors.white : Colors.white.withValues(alpha: 0.6),
-                fontSize: 14,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+    return Semantics(
+      button: true,
+      selected: isSelected,
+      label: ref.tr(item.l10nKey),
+      child: InkWell(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          decoration: BoxDecoration(
+            color: isSelected ? Colors.white.withValues(alpha: 0.12) : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+            border: isSelected
+                ? Border(left: BorderSide(color: CivicPulseTheme.secondaryContainer, width: 3))
+                : null,
+          ),
+          child: Row(
+            children: [
+              ExcludeSemantics(
+                child: Icon(
+                  item.icon,
+                  color: isSelected ? Colors.white : Colors.white.withValues(alpha: 0.6),
+                  size: 20,
+                ),
               ),
-            ),
-          ],
+              const SizedBox(width: 12),
+              Text(
+                ref.tr(item.l10nKey),
+                style: TextStyle(
+                  color: isSelected ? Colors.white : Colors.white.withValues(alpha: 0.6),
+                  fontSize: 14,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

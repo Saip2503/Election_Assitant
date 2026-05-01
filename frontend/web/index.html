@@ -1,6 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#003366">
+  <meta name="description" content="Election Dost – Your AI-powered civic assistant for Indian elections. Check voter eligibility, find your polling booth, and learn about the democratic process.">
+
   <!--
     If you are serving your web app in a path other than the root, change the
     href value below to reflect the base path you are serving from.
@@ -18,12 +22,12 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="apple-mobile-web-app-title" content="Election Dost">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="frontend">
+
   <link rel="apple-touch-icon" href="icons/Icon-192.webp">
 
   <!-- Favicon -->
@@ -36,6 +40,22 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=GOOGLE_MAPS_API_KEY_PLACEHOLDER&loading=async" defer></script>
 </head>
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+  <!-- Skip navigation link for screen readers (WCAG 2.4.1) -->
+  <a href="#main-content" class="skip-link"
+     style="position:absolute;left:-9999px;top:0;z-index:9999;padding:8px 16px;
+            background:#003366;color:#fff;font-family:sans-serif;font-size:14px;
+            text-decoration:none;border-radius:0 0 4px 4px;"
+     onfocus="this.style.left='0'"
+     onblur="this.style.left='-9999px'">
+    Skip to main content
+  </a>
+  <main id="main-content" role="main" aria-label="Election Dost Application">
+    <script src="flutter_bootstrap.js" async></script>
+  </main>
+  <noscript>
+    <p style="text-align:center;padding:40px;font-family:sans-serif;color:#003366;">
+      Election Dost requires JavaScript to run. Please enable JavaScript in your browser settings.
+    </p>
+  </noscript>
 </body>
 </html>
