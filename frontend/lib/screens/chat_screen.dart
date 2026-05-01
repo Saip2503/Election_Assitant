@@ -102,7 +102,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       child: Row(
         children: [
           // Logo/Brand
-          Image.asset('assets/images/logo.png', height: 40),
+          Image.asset('assets/images/logo.webp', height: 40),
           const SizedBox(width: 12),
           Text(
             ref.tr('app_title'),

@@ -107,7 +107,7 @@ class _CandidateTileState extends State<_CandidateTile> {
             CircleAvatar(
               backgroundColor: c.color.withValues(alpha: 0.12),
               radius: 24,
-              backgroundImage: const AssetImage('assets/images/candidate_placeholder.png'),
+              backgroundImage: const AssetImage('assets/images/candidate_placeholder.webp'),
             ),
             const SizedBox(width: 14),
             Expanded(

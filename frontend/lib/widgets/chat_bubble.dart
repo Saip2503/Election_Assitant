@@ -45,7 +45,7 @@ class ChatBubble extends StatelessWidget {
                   margin: const EdgeInsets.only(right: 8, top: 2),
                   decoration: const BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/assistant_avatar.png'),
+                      image: AssetImage('assets/images/assistant_avatar.webp'),
                       fit: BoxFit.cover,
                     ),
                     shape: BoxShape.circle,

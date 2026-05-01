@@ -16,7 +16,7 @@ class LoginScreen extends ConsumerWidget {
           // Background Image
           Positioned.fill(
             child: Image.asset(
-              'assets/images/hero_bg.png',
+              'assets/images/hero_bg.webp',
               fit: BoxFit.cover,
               color: Colors.black.withValues(alpha: 0.5),
               colorBlendMode: BlendMode.darken,
@@ -47,7 +47,7 @@ class LoginScreen extends ConsumerWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Image.asset('assets/images/logo.png', height: 80),
+                  Image.asset('assets/images/logo.webp', height: 80),
                   const SizedBox(height: 24),
                   Text(
                     ref.tr('app_title'),

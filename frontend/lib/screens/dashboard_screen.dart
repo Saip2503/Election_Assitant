@@ -139,7 +139,7 @@ class DashboardScreen extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Row(
         children: [
-          Image.asset('assets/images/logo.png', height: 40),
+          Image.asset('assets/images/logo.webp', height: 40),
           const SizedBox(width: 12),
           Text(
             ref.tr('civic_pulse'),
@@ -273,7 +273,7 @@ class DashboardScreen extends ConsumerWidget {
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
         image: const DecorationImage(
-          image: AssetImage('assets/images/hero_bg.png'),
+          image: AssetImage('assets/images/hero_bg.webp'),
           fit: BoxFit.cover,
           opacity: 0.15,
         ),
