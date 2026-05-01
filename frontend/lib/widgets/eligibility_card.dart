@@ -205,35 +205,38 @@ class _CriterionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 32, height: 32,
-            decoration: BoxDecoration(
-              color: CivicPulseTheme.tertiaryContainer.withValues(alpha: 0.15),
-              shape: BoxShape.circle,
+    return Semantics(
+      label: 'Requirement: ${criterion.title}. ${criterion.desc}',
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 32, height: 32,
+              decoration: BoxDecoration(
+                color: CivicPulseTheme.tertiaryContainer.withValues(alpha: 0.15),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(Icons.check, size: 16, color: CivicPulseTheme.tertiaryContainer),
             ),
-            child: Icon(Icons.check, size: 16, color: CivicPulseTheme.tertiaryContainer),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(criterion.title,
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.w600, color: const Color(0xFF191C1D))),
-                const SizedBox(height: 2),
-                Text(criterion.desc,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: CivicPulseTheme.outline)),
-              ],
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(criterion.title,
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.w600, color: const Color(0xFF191C1D))),
+                  const SizedBox(height: 2),
+                  Text(criterion.desc,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: CivicPulseTheme.outline)),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -246,27 +249,32 @@ class _DatePicker extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(
-          color: CivicPulseTheme.background,
-          border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row(
-          children: [
-            const Icon(Icons.calendar_today_outlined, size: 20, color: CivicPulseTheme.primary),
-            const SizedBox(width: 12),
-            Expanded(child: Text(
-              selectedDate == null ? ref.tr('select_dob') : DateFormat('dd MMM yyyy').format(selectedDate!),
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: selectedDate == null ? CivicPulseTheme.outline : const Color(0xFF191C1D)),
-            )),
-            const Icon(Icons.arrow_drop_down, color: CivicPulseTheme.outline),
-          ],
+    return Semantics(
+      label: ref.tr('age_check_title'),
+      hint: ref.tr('select_dob'),
+      button: true,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            color: CivicPulseTheme.background,
+            border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            children: [
+              const Icon(Icons.calendar_today_outlined, size: 20, color: CivicPulseTheme.primary),
+              const SizedBox(width: 12),
+              Expanded(child: Text(
+                selectedDate == null ? ref.tr('select_dob') : DateFormat('dd MMM yyyy').format(selectedDate!),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: selectedDate == null ? CivicPulseTheme.outline : const Color(0xFF191C1D)),
+              )),
+              const Icon(Icons.arrow_drop_down, color: CivicPulseTheme.outline),
+            ],
+          ),
         ),
       ),
     );
@@ -281,21 +289,25 @@ class _ResultBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = isEligible ? CivicPulseTheme.tertiaryContainer : Theme.of(context).colorScheme.error;
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        children: [
-          Icon(isEligible ? Icons.check_circle_outline : Icons.cancel_outlined, color: color, size: 22),
-          const SizedBox(width: 10),
-          Expanded(child: Text(message,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: color, fontWeight: FontWeight.w600))),
-        ],
+    return Semantics(
+      label: 'Eligibility Result: $message',
+      liveRegion: true,
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: color.withValues(alpha: 0.3)),
+        ),
+        child: Row(
+          children: [
+            Icon(isEligible ? Icons.check_circle_outline : Icons.cancel_outlined, color: color, size: 22),
+            const SizedBox(width: 10),
+            Expanded(child: Text(message,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: color, fontWeight: FontWeight.w600))),
+          ],
+        ),
       ),
     );
   }

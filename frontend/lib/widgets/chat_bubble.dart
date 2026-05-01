@@ -14,107 +14,106 @@ class ChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 20),
-      child: Column(
-        crossAxisAlignment:
-            message.isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-        children: [
-          // Sender label
-          Padding(
-            padding: const EdgeInsets.only(bottom: 4, left: 4, right: 4),
-            child: Text(
-              message.isUser ? 'You' : 'Election Dost',
-              style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    color: CivicPulseTheme.outline,
-                    fontWeight: FontWeight.w600,
-                  ),
-            ),
-          ),
-          // Bubble
-          Row(
-            mainAxisAlignment:
-                message.isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (!message.isUser) ...[
-                // Avatar for assistant
-                Container(
-                  width: 32,
-                  height: 32,
-                  margin: const EdgeInsets.only(right: 8, top: 2),
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/images/assistant_avatar.webp'),
-                      fit: BoxFit.cover,
-                    ),
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ],
-              Flexible(
-                child: Container(
-                  constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width * 0.65,
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: message.isUser
-                        ? CivicPulseTheme.primary
-                        : Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: const Radius.circular(16),
-                      topRight: const Radius.circular(16),
-                      bottomLeft: Radius.circular(message.isUser ? 16 : 4),
-                      bottomRight: Radius.circular(message.isUser ? 4 : 16),
-                    ),
-                    border: message.isUser
-                        ? null
-                        : Border.all(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .outlineVariant
-                                .withValues(alpha: 0.6),
+    return Semantics(
+      label: 'Message from ${message.isUser ? 'You' : 'Election Dost'}',
+      container: true,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 20),
+        child: Column(
+          crossAxisAlignment:
+              message.isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
+            // Bubble
+            MergeSemantics(
+              child: Row(
+                mainAxisAlignment:
+                    message.isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (!message.isUser) ...[
+                    // Avatar for assistant
+                    ExcludeSemantics(
+                      child: Container(
+                        width: 32,
+                        height: 32,
+                        margin: const EdgeInsets.only(right: 8, top: 2),
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/images/assistant_avatar.webp'),
+                            fit: BoxFit.cover,
                           ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: CivicPulseTheme.primary.withValues(alpha: 0.06),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Text(
-                    message.text,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: message.isUser ? Colors.white : const Color(0xFF191C1D),
-                          height: 1.5,
+                          shape: BoxShape.circle,
                         ),
+                      ),
+                    ),
+                  ],
+                  Flexible(
+                    child: Container(
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.65,
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: message.isUser
+                            ? CivicPulseTheme.primary
+                            : Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: const Radius.circular(16),
+                          topRight: const Radius.circular(16),
+                          bottomLeft: Radius.circular(message.isUser ? 16 : 4),
+                          bottomRight: Radius.circular(message.isUser ? 4 : 16),
+                        ),
+                        border: message.isUser
+                            ? null
+                            : Border.all(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .outlineVariant
+                                    .withValues(alpha: 0.6),
+                              ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: CivicPulseTheme.primary.withValues(alpha: 0.06),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        message.text,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: message.isUser ? Colors.white : const Color(0xFF191C1D),
+                              height: 1.5,
+                            ),
+                      ),
+                    ),
                   ),
-                ),
+                  if (message.isUser) ...[
+                    // Avatar for user
+                    ExcludeSemantics(
+                      child: Container(
+                        width: 32,
+                        height: 32,
+                        margin: const EdgeInsets.only(left: 8, top: 2),
+                        decoration: BoxDecoration(
+                          color: CivicPulseTheme.secondaryContainer,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.person_outline,
+                            color: CivicPulseTheme.primary, size: 18),
+                      ),
+                    ),
+                  ],
+                ],
               ),
-              if (message.isUser) ...[
-                // Avatar for user
-                Container(
-                  width: 32,
-                  height: 32,
-                  margin: const EdgeInsets.only(left: 8, top: 2),
-                  decoration: BoxDecoration(
-                    color: CivicPulseTheme.secondaryContainer,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(Icons.person_outline,
-                      color: CivicPulseTheme.primary, size: 18),
-                ),
-              ],
+            ),
+            // Interactive widget
+            if (message.intent != null) ...[
+              const SizedBox(height: 12),
+              _buildInteractiveWidget(context),
             ],
-          ),
-          // Interactive widget
-          if (message.intent != null) ...[
-            const SizedBox(height: 12),
-            _buildInteractiveWidget(context),
           ],
-        ],
+        ),
       ),
     );
   }

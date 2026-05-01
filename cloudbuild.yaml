@@ -6,8 +6,8 @@ steps:
     args:
       - '-c'
       - |
-        sed -i -e "s/GOOGLE_CLIENT_ID_PLACEHOLDER/781943476215-ls2li6q2822im54l3v6ubl79sg7v2l22.apps.googleusercontent.com/g" \
-               -e "s/GOOGLE_MAPS_API_KEY_PLACEHOLDER/AIzaSyDEavEM7lD3pXcQzrltfYYiXj3KEJ2eCkU/g" \
+        sed -i -e "s/GOOGLE_CLIENT_ID_PLACEHOLDER/$_GOOGLE_CLIENT_ID/g" \
+               -e "s/GOOGLE_MAPS_API_KEY_PLACEHOLDER/$_GOOGLE_MAPS_API_KEY/g" \
                frontend/web/index.html
 
   # Step 1: Build Flutter Web

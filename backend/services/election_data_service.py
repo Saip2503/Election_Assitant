@@ -94,14 +94,14 @@ class ElectionDataService:
         # Return the first matching record with all requested fields
         row = results.iloc[0]
         return {
-            'Constituency': row.get('Constituency'),
-            'Const_No': row.get('Const_No'),
-            'Leading_Candidate': row.get('Leading_Candidate'),
-            'Leading_Party': row.get('Leading_Party'),
-            'Trailing_Candidate': row.get('Trailing_Candidate'),
-            'Trailing_Party': row.get('Trailing_Party'),
-            'Margin': row.get('Margin'),
-            'Status': row.get('Status')
+            'Constituency': str(row.get('Constituency')),
+            'Const_No': int(row.get('Const_No')),
+            'Leading_Candidate': str(row.get('Leading_Candidate')),
+            'Leading_Party': str(row.get('Leading_Party')),
+            'Trailing_Candidate': str(row.get('Trailing_Candidate')),
+            'Trailing_Party': str(row.get('Trailing_Party')),
+            'Margin': str(row.get('Margin')),
+            'Status': str(row.get('Status'))
         }
 
     def get_party_summary(self):
