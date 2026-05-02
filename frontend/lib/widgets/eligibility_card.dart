@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/l10n_service.dart';
 import '../theme/civic_pulse_theme.dart';
+import '../services/external_links_service.dart';
 import 'shared_card_shell.dart';
 
 class EligibilityCard extends ConsumerStatefulWidget {
@@ -137,7 +138,7 @@ class _EligibilityCardState extends ConsumerState<EligibilityCard> {
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
-                onPressed: () {},
+                onPressed: () => ExternalLinksService.launchURL(ExternalLinksService.voterPortal),
                 icon: const Icon(Icons.download_outlined, size: 18),
                 label: Text(ref.tr('download_form6')),
                 style: OutlinedButton.styleFrom(

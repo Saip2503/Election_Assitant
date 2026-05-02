@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme/civic_pulse_theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/l10n_service.dart';
+import '../services/external_links_service.dart';
 import 'shared_card_shell.dart';
 
 class CandidateCard extends ConsumerWidget {
@@ -65,19 +66,36 @@ class CandidateCard extends ConsumerWidget {
       subtitle: ref.tr('candidate_subtitle'),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: list.asMap().entries.map((e) {
-          final c = e.value;
-          final isLast = e.key == list.length - 1;
-          return Column(
-            children: [
-              _CandidateTile(candidate: c, ref: ref),
-              if (!isLast) const Padding(
-                padding: EdgeInsets.symmetric(vertical: 12),
-                child: Divider(height: 1),
+        children: [
+          ...list.asMap().entries.map((e) {
+            final c = e.value;
+            final isLast = e.key == list.length - 1;
+            return Column(
+              children: [
+                _CandidateTile(candidate: c, ref: ref),
+                if (!isLast) const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  child: Divider(height: 1),
+                ),
+              ],
+            );
+          }).toList(),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => ExternalLinksService.launchURL(ExternalLinksService.candidateAffidavit),
+              icon: const Icon(Icons.description_outlined, size: 16),
+              label: const Text('View Official Affidavits (ECI)'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: CivicPulseTheme.primary,
+                side: const BorderSide(color: CivicPulseTheme.primary),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9999)),
+                padding: const EdgeInsets.symmetric(vertical: 14),
               ),
-            ],
-          );
-        }).toList(),
+            ),
+          ),
+        ],
       ),
     );
   }

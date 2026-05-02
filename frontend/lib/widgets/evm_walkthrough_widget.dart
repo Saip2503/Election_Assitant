@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/l10n_service.dart';
 import '../theme/civic_pulse_theme.dart';
+import '../services/external_links_service.dart';
 import 'shared_card_shell.dart';
 
 class EVMWalkthroughWidget extends ConsumerStatefulWidget {
@@ -185,6 +186,18 @@ class _EVMWalkthroughWidgetState extends ConsumerState<EVMWalkthroughWidget> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9999)),
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                     ),
+                  ),
+                )
+              else
+                OutlinedButton.icon(
+                  onPressed: () => ExternalLinksService.launchURL(ExternalLinksService.evmInfo),
+                  icon: const Icon(Icons.info_outline, size: 16),
+                  label: const Text('Official EVM Info'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: CivicPulseTheme.secondary,
+                    side: const BorderSide(color: CivicPulseTheme.secondary),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9999)),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   ),
                 ),
               const Spacer(),

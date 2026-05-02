@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/l10n_service.dart';
 import '../theme/civic_pulse_theme.dart';
+import '../services/external_links_service.dart';
 import 'shared_card_shell.dart';
 
 class Form8Card extends ConsumerWidget {
@@ -65,7 +66,7 @@ class Form8Card extends ConsumerWidget {
             children: [
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: () {},
+                  onPressed: () => ExternalLinksService.launchURL(ExternalLinksService.pdfElectoralRoll),
                   icon: const Icon(Icons.download_outlined, size: 16),
                   label: Text(ref.tr('download_form8')),
                   style: OutlinedButton.styleFrom(
@@ -79,7 +80,7 @@ class Form8Card extends ConsumerWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: FilledButton.icon(
-                  onPressed: () {},
+                  onPressed: () => ExternalLinksService.launchURL(ExternalLinksService.voterPortal),
                   icon: const Icon(Icons.open_in_new, size: 16),
                   label: Text(ref.tr('submit_online')),
                   style: FilledButton.styleFrom(

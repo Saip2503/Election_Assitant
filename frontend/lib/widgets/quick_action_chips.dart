@@ -15,6 +15,7 @@ class QuickActionChips extends StatelessWidget {
       _QuickAction(icon: Icons.quiz_outlined, label: 'Civic Quiz'),
       _QuickAction(icon: Icons.people_outline, label: 'Candidates'),
       _QuickAction(icon: Icons.edit_note_outlined, label: 'Update Info'),
+      _QuickAction(icon: Icons.link_outlined, label: 'Official Links'),
     ];
 
     return Container(

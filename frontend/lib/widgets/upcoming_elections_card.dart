@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme/civic_pulse_theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/l10n_service.dart';
+import '../services/external_links_service.dart';
 import 'shared_card_shell.dart';
 
 class UpcomingElectionsCard extends ConsumerWidget {
@@ -28,6 +29,20 @@ class UpcomingElectionsCard extends ConsumerWidget {
             ref.tr('maharashtra_date'),
             ref.tr('scheduled'),
             CivicPulseTheme.primaryContainer,
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              onPressed: () => ExternalLinksService.launchURL(ExternalLinksService.resultsPortal),
+              icon: const Icon(Icons.analytics_outlined, size: 16),
+              label: const Text('View Official Results Portal'),
+              style: FilledButton.styleFrom(
+                backgroundColor: CivicPulseTheme.primary,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9999)),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+              ),
+            ),
           ),
         ],
       ),

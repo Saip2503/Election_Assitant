@@ -4,6 +4,7 @@ import 'package:pointer_interceptor/pointer_interceptor.dart';
 import '../theme/civic_pulse_theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/l10n_service.dart';
+import '../services/external_links_service.dart';
 import 'shared_card_shell.dart';
 
 class BoothFinderCard extends ConsumerStatefulWidget {
@@ -426,7 +427,7 @@ class _BoothResult extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton.icon(
-                    onPressed: () {},
+                    onPressed: () => ExternalLinksService.launchURL(ExternalLinksService.pollingStationSearch),
                     icon: const Icon(Icons.directions_outlined, size: 16),
                     label: Text(ref.tr('get_directions')),
                     style: OutlinedButton.styleFrom(

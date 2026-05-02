@@ -7,6 +7,7 @@ import 'quiz_widget.dart';
 import 'form8_card.dart';
 import 'booth_finder_card.dart';
 import 'candidate_card.dart';
+import 'official_links_card.dart';
 
 class ChatBubble extends StatelessWidget {
   final ChatMessage message;
@@ -139,6 +140,8 @@ class ChatBubble extends StatelessWidget {
           return QuizWidget(questions: message.payload!['questions']);
         }
         return const SizedBox.shrink();
+      case 'official_links':
+        return const OfficialLinksCard();
       default:
         return const SizedBox.shrink();
     }

@@ -134,6 +134,11 @@ const _localIntents = <String, Map<String, dynamic>>{
     'intent': 'form8',
     'payload': null,
   },
+  'official links': {
+    'key': 'intent_official_links',
+    'intent': 'official_links',
+    'payload': null,
+  },
 };
 
 // ── Notifier ──────────────────────────────────────────────────────────────────

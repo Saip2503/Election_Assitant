@@ -148,6 +148,8 @@ class L10nService {
       'previous': 'Previous',
       'next_step': 'Next Step',
       'got_it': 'Got It!',
+      'official_links': 'Official Election Links',
+      'intent_official_links': 'Here is the complete directory of official Election Commission and Government portals.',
     },
     'hi': {
       'app_title': 'चुनाव दोस्त',
@@ -294,6 +296,8 @@ class L10nService {
       'previous': 'पिछला',
       'next_step': 'अगला चरण',
       'got_it': 'समझ गया!',
+      'official_links': 'आधिकारिक चुनाव लिंक',
+      'intent_official_links': 'यहाँ चुनाव आयोग और सरकारी पोर्टलों की पूरी निर्देशिका है।',
     },
     'te': {
       'app_title': 'ఎన్నికల దోస్త్',
@@ -441,6 +445,8 @@ class L10nService {
       'previous': 'మునుపటి',
       'next_step': 'తదుపరి దశ',
       'got_it': 'అర్థమైంది!',
+      'official_links': 'అధికారిక ఎన్నికల లింకులు',
+      'intent_official_links': 'ఎన్నికల సంఘం మరియు ప్రభుత్వ పోర్టల్‌ల పూర్తి డైరెక్టరీ ఇక్కడ ఉంది.',
     },
   };
 
