@@ -20,11 +20,16 @@ class _BoothFinderCardState extends ConsumerState<BoothFinderCard> {
   GoogleMapController? _mapController;
   LatLng _boothLocation = const LatLng(18.9894, 73.1175); // New Panvel
   bool _isSearching = false;
+  _BoothData _currentBooth = _mockBooths[0];
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController(text: widget.location);
+    if (widget.location != null && widget.location!.isNotEmpty) {
+      // Small delay to allow map to load before initial search if location provided
+      Future.delayed(const Duration(milliseconds: 500), _handleSearch);
+    }
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -32,31 +37,116 @@ class _BoothFinderCardState extends ConsumerState<BoothFinderCard> {
   }
 
   Future<void> _handleSearch() async {
+    final query = _controller.text.trim().toLowerCase();
+    if (query.isEmpty) return;
+
     setState(() => _isSearching = true);
-    // In a real app, you'd call Google Places API here to get LatLng
-    // For now, we simulate a slight shift to show interactivity
-    await Future.delayed(const Duration(seconds: 1));
-    setState(() {
-      _isSearching = false;
-      // Mock logic: move marker slightly
-      _boothLocation = LatLng(
-        _boothLocation.latitude + (DateTime.now().second % 10) * 0.001,
-        _boothLocation.longitude + (DateTime.now().second % 10) * 0.001,
+    
+    // Simulate network delay
+    await Future.delayed(const Duration(milliseconds: 1200));
+
+    // Simple keyword-based mock geocoding
+    _BoothData selectedBooth = _mockBooths[0]; // Default: Panvel
+    LatLng newLocation = const LatLng(18.9894, 73.1175);
+
+    if (query.contains('mumbai')) {
+      selectedBooth = _mockBooths[1];
+      newLocation = const LatLng(19.0760, 72.8777);
+    } else if (query.contains('pune')) {
+      selectedBooth = _mockBooths[2];
+      newLocation = const LatLng(18.5204, 73.8567);
+    } else if (query.contains('delhi')) {
+      selectedBooth = _mockBooths[3];
+      newLocation = const LatLng(28.6139, 77.2090);
+    } else if (query.contains('bangalore') || query.contains('bengaluru')) {
+      selectedBooth = _mockBooths[4];
+      newLocation = const LatLng(12.9716, 77.5946);
+    } else if (query.contains('hyderabad')) {
+      selectedBooth = _mockBooths[5];
+      newLocation = const LatLng(17.3850, 78.4867);
+    } else {
+      // Deterministic shift based on text length for "any other" address
+      final hash = query.length;
+      newLocation = LatLng(
+        18.9894 + (hash % 10) * 0.01,
+        73.1175 + (hash % 15) * 0.01,
       );
-    });
-    _mapController?.animateCamera(CameraUpdate.newLatLng(_boothLocation));
+      selectedBooth = _mockBooths[0].copyWith(
+        address: _controller.text,
+        name: 'Primary School, ${_controller.text.split(',').first}',
+      );
+    }
+
+    if (mounted) {
+      setState(() {
+        _isSearching = false;
+        _boothLocation = newLocation;
+        _currentBooth = selectedBooth;
+      });
+      _mapController?.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(target: _boothLocation, zoom: 14),
+        ),
+      );
+    }
   }
 
-  static const _mockBooth = _BoothData(
-    boothNumber: 'Polling Booth No. 142',
-    name: 'Zilla Parishad School, New Panvel',
-    address:
-        'Sector 5, Near Khandeshwar Railway Station, New Panvel (E), Maharashtra 410206',
-    queueStatus: 'Low Wait Time (~10 mins)',
-    queueLevel: 0.25,
-    blo: 'Mr. Ramesh Kumar',
-    helpline: '1950',
-  );
+  static final List<_BoothData> _mockBooths = [
+    const _BoothData(
+      boothNumber: 'Booth No. 142',
+      name: 'Zilla Parishad School, New Panvel',
+      address: 'Sector 5, Near Khandeshwar Station, New Panvel (E), Maharashtra',
+      queueStatus: 'Low Wait Time (~10 mins)',
+      queueLevel: 0.25,
+      blo: 'Mr. Ramesh Kumar',
+      helpline: '1950',
+    ),
+    const _BoothData(
+      boothNumber: 'Booth No. 88',
+      name: 'Municipal School, Dadar',
+      address: 'Dadar West, Near Flower Market, Mumbai, Maharashtra',
+      queueStatus: 'Moderate Wait (~25 mins)',
+      queueLevel: 0.55,
+      blo: 'Ms. Priya Sharma',
+      helpline: '1950',
+    ),
+    const _BoothData(
+      boothNumber: 'Booth No. 201',
+      name: 'Modern College, Shivajinagar',
+      address: 'Ganeshkhind Road, Shivajinagar, Pune, Maharashtra',
+      queueStatus: 'Busy (~45 mins)',
+      queueLevel: 0.85,
+      blo: 'Mr. Suresh Patil',
+      helpline: '1950',
+    ),
+    const _BoothData(
+      boothNumber: 'Booth No. 12',
+      name: 'Kendriya Vidyalaya, RK Puram',
+      address: 'RK Puram Sector 4, New Delhi',
+      queueStatus: 'Low Wait Time (~5 mins)',
+      queueLevel: 0.15,
+      blo: 'Mr. Anil Tyagi',
+      helpline: '1950',
+    ),
+    const _BoothData(
+      boothNumber: 'Booth No. 54',
+      name: 'Government School, Indiranagar',
+      address: 'Double Road, Indiranagar, Bengaluru, Karnataka',
+      queueStatus: 'Moderate Wait (~15 mins)',
+      queueLevel: 0.40,
+      blo: 'Ms. Kavitha Rao',
+      helpline: '1950',
+    ),
+    const _BoothData(
+      boothNumber: 'Booth No. 310',
+      name: 'Public School, Jubilee Hills',
+      address: 'Road No. 36, Jubilee Hills, Hyderabad, Telangana',
+      queueStatus: 'Low Wait Time (~10 mins)',
+      queueLevel: 0.30,
+      blo: 'Mr. Venkatesh G.',
+      helpline: '1950',
+    ),
+  ];
 
   static const _facilities = [
     _Facility(icon: Icons.accessible_forward, label: 'Ramp Access'),
@@ -147,7 +237,7 @@ class _BoothFinderCardState extends ConsumerState<BoothFinderCard> {
           // Show mock result always (or after search)
           const SizedBox(height: 20),
           _BoothResult(
-            booth: _mockBooth,
+            booth: _currentBooth,
             facilities: _facilities,
             location: _boothLocation,
             onMapCreated: _onMapCreated,
@@ -549,6 +639,26 @@ class _BoothData {
     required this.blo,
     required this.helpline,
   });
+
+  _BoothData copyWith({
+    String? boothNumber,
+    String? name,
+    String? address,
+    String? queueStatus,
+    double? queueLevel,
+    String? blo,
+    String? helpline,
+  }) {
+    return _BoothData(
+      boothNumber: boothNumber ?? this.boothNumber,
+      name: name ?? this.name,
+      address: address ?? this.address,
+      queueStatus: queueStatus ?? this.queueStatus,
+      queueLevel: queueLevel ?? this.queueLevel,
+      blo: blo ?? this.blo,
+      helpline: helpline ?? this.helpline,
+    );
+  }
 }
 
 class _Facility {

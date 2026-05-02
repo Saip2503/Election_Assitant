@@ -100,6 +100,12 @@ graph TD
 - Returns eligible/not-eligible with registration guidance.
 - Interactive `EligibilityCard` shows Form 6 download link for eligible users.
 
+### 📍 Interactive Booth Finder
+- **Address-Based Search**: Users can type an address or city to find their polling booth.
+- **Mock Geocoding Engine**: Supports major Indian cities (Mumbai, Pune, Delhi, Bengaluru, Hyderabad) with localized booth results.
+- **Real-time Map Feedback**: Animates the camera to the found booth location on an interactive Google Map.
+- **Queue Simulation**: Displays live-simulated queue status and facility information for each booth.
+
 ### 🎮 EVM Simulator
 - 4-step interactive walkthrough (ID Verification → Inking → Voting → VVPAT).
 - Step-by-step navigation with animated transitions.
@@ -158,7 +164,7 @@ Election Dost is built with inclusive design as a first-class concern:
 ## 📝 Assumptions Made
 
 1. **Dataset:** The 2024 Lok Sabha results are stored as in-memory mock data (5 key constituencies) to stay within the 10MB repo size limit. In production, this connects to a full Kaggle/ECI dataset via the same `ElectionDataService` interface.
-2. **Geolocation:** For demo purposes, booth finder defaults to **New Panvel, Maharashtra**. Production would integrate with ECI's electoral roll API using the user's actual EPIC number.
+2. **Geolocation:** For demo purposes, the booth finder uses a keyword-based mock geocoding engine for major Indian cities. Production would integrate with Google Places API and ECI's polling station directory.
 3. **Deployment:** Web-only architecture to ensure the repository stays under 10MB (no Android/iOS/desktop folders).
 4. **Authentication:** Google Sign-In is fully integrated; Google One Tap is initialized via `index.html` for seamless web authentication.
 5. **Language:** Gemini is prompted to reply natively in the selected language (en/hi/te) — no post-processing translation APIs are used.
