@@ -40,6 +40,7 @@ The AI response is parsed for **intent tags**. Each intent triggers a Flutter wi
 | `booth_finder` | `BoothFinderCard` — geo-aware polling booth lookup |
 | `quiz` | `QuizWidget` — gamified civic knowledge quiz |
 | `candidates` | `CandidateCard` — candidate profile comparison |
+| `official_links` | `OfficialLinksCard` — Categorized directory of 25+ ECI/Govt portals |
 
 ### 3. Service Layer Architecture (RULE 4 Compliant)
 ```
@@ -53,8 +54,9 @@ Service Layer   →  all business logic lives here
 ```
 
 ### 4. Reactive Frontend (Riverpod + GoRouter)
-- **Riverpod** provides reactive state management — language changes, auth state, and chat messages all propagate instantly across the widget tree
-- **GoRouter** enforces a `Login → Onboarding → Dashboard` sequential flow with authentication guards
+- **Riverpod** provides reactive state management — language changes, auth state, and chat messages all propagate instantly across the widget tree.
+- **GoRouter** enforces a `Login → Onboarding → Dashboard` sequential flow with authentication guards.
+- **Official WebView Integration**: Seamlessly embeds the **ECI Results Portal** via `HtmlElementView` for real-time, authoritative data.
 
 ---
 
@@ -69,6 +71,7 @@ graph TD
     Firestore["Firestore\n(Feedback + Leaderboard)"]
     Data["ElectionDataService\n(2024 Lok Sabha Data)"]
     Maps["Google Maps JS API\n(Booth Finder)"]
+    ECI["ECI Results Portal\n(Official WebView)"]
 
     User -->|"HTTPS"| Flutter
     Flutter -->|"REST /api/chat"| FastAPI
@@ -77,6 +80,7 @@ graph TD
     FastAPI -->|"get_context_for_ai()"| Data
     FastAPI -->|"save_feedback()"| Firestore
     Flutter -->|"Maps Embed"| Maps
+    Flutter -->|"IFrame Embed"| ECI
 ```
 
 ---
@@ -84,32 +88,38 @@ graph TD
 ## 🛠️ How the Solution Works
 
 ### 💬 Ask Dost (AI Chat)
-1. User types a question in any language
-2. FastAPI sanitizes input and sends to `VertexAIService`
-3. Gemini 1.5 Flash receives a rich system prompt with election data context
-4. Response is parsed for intent tags
-5. Flutter renders the matching interactive widget alongside the text reply
+1. User types a question in any language.
+2. FastAPI sanitizes input and sends to `VertexAIService`.
+3. Gemini 1.5 Flash receives a rich system prompt with election data context.
+4. Response is parsed for intent tags.
+5. Flutter renders the matching interactive widget (e.g., `OfficialLinksCard`) alongside the text reply.
 
 ### 🗳️ Voter Eligibility Checker
-- User enters their date of birth
-- Backend calculates age against the April 1, 2026 election cutoff
-- Returns eligible/not-eligible with registration guidance
-- Interactive `EligibilityCard` shows Form 6 download link for eligible users
+- User enters their date of birth.
+- Backend calculates age against the April 1, 2026 election cutoff.
+- Returns eligible/not-eligible with registration guidance.
+- Interactive `EligibilityCard` shows Form 6 download link for eligible users.
 
 ### 🎮 EVM Simulator
-- 4-step interactive walkthrough (ID Verification → Inking → Voting → VVPAT)
-- Step-by-step navigation with animated transitions
-- Reduces voter anxiety and errors on election day
+- 4-step interactive walkthrough (ID Verification → Inking → Voting → VVPAT).
+- Step-by-step navigation with animated transitions.
+- Reduces voter anxiety and errors on election day.
+- Includes a direct link to **Official ECI EVM/VVPAT Information** for deep-dives.
 
-### 📊 Election Results Dashboard
-- Search 543+ parliamentary constituencies
-- View leading/trailing candidates, party, margin, and status
-- Party-wise seat distribution chart
+### 📊 Official Results Dashboard (Live WebView)
+- **Real-time Data**: Integrated the official **ECI Results Portal** (`results.eci.gov.in`) directly into the dashboard.
+- **Authoritative Source**: Ensures users get the most accurate, second-by-second seat counts and margins directly from the source.
+- **Seamless UX**: Custom-built header allows easy navigation back to the assistant without leaving the app context.
+
+### 📂 Official Resource Directory
+- **Categorized Hub**: A centralized directory of 25+ verified ECI and Government services.
+- **Quick Access**: Accessible via "Official Links" chip or AI prompt.
+- **Categories**: Voter Services, Admin & Laws, State Portals (Maharashtra), and Specialized Resources.
 
 ### 🧩 Civic Quiz
-- 5 questions on Indian democratic processes
-- Immediate feedback with explanation for each answer
-- Score tracking and streak gamification
+- 5 questions on Indian democratic processes.
+- Immediate feedback with explanation for each answer.
+- Score tracking and streak gamification.
 
 ---
 
