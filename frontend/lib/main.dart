@@ -11,28 +11,42 @@ import 'theme/civic_pulse_theme.dart';
 import 'providers/auth_provider.dart';
 
 // ── Router provider ─────────────────────────────────────────────────────────
+// Routes that anonymous (guest) users may access
+const _guestRoutes = {'/chat', '/results', '/quiz', '/login'};
+
 final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authProvider);
-  
+  final user = ref.watch(authProvider);
+
   return GoRouter(
     initialLocation: '/login',
-    // Re-evaluate redirect logic whenever authState changes
     refreshListenable: _AuthListenable(ref),
     redirect: (context, state) {
-      final isLoggedIn = authState != null;
-      final isLoggingIn = state.uri.path == '/login';
+      final path = state.uri.path;
+      final isLoggedIn = user != null;
+      final isAnonymous = user?.isAnonymous ?? false;
+      final isOnLogin = path == '/login';
 
+      // Not logged in at all → force to login
       if (!isLoggedIn) {
-        // If not logged in and not on login page, go to login
-        return isLoggingIn ? null : '/login';
+        return isOnLogin ? null : '/login';
       }
 
-      // If logged in and on login page, go to onboarding
-      if (isLoggingIn) {
+      // Anonymous user trying to reach a restricted route → back to login
+      if (isAnonymous && !_guestRoutes.contains(path)) {
+        return '/login';
+      }
+
+      // Fully authenticated on login page → onboarding
+      if (!isAnonymous && isOnLogin) {
         return '/onboarding';
       }
 
-      return null; // No redirect needed
+      // Anonymous on login page → send to chat
+      if (isAnonymous && isOnLogin) {
+        return '/chat';
+      }
+
+      return null;
     },
     routes: [
       GoRoute(

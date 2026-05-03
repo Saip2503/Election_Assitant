@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/chat_provider.dart';
+import '../providers/auth_provider.dart';
 import '../widgets/chat_bubble.dart';
 import '../widgets/quick_action_chips.dart';
 import '../theme/civic_pulse_theme.dart';
@@ -173,9 +174,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   Widget _buildMainContent(BuildContext context, messages, String selectedLang) {
+    final user = ref.watch(authProvider);
+    final isAnonymous = user?.isAnonymous ?? false;
     return Expanded(
       child: Column(
         children: [
+          // Anonymous guest upsell banner
+          if (isAnonymous) _buildGuestBanner(context),
           // Welcome / context bar
           if (messages.isEmpty) _buildWelcomeBanner(context, selectedLang),
           // Quick action chips
@@ -200,6 +205,51 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           // Input area
           _buildInputArea(context),
         ],
+      ),
+    );
+  }
+
+  /// Shown to anonymous users to encourage Google sign-in.
+  Widget _buildGuestBanner(BuildContext context) {
+    return Semantics(
+      liveRegion: true,
+      label: 'Guest mode: some features require sign-in',
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        color: const Color(0xFFFFF8E1),
+        child: Row(
+          children: [
+            const Icon(Icons.info_outline, color: Color(0xFFF57F17), size: 18),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                'Browsing as Guest — Voter Registration, Booth Finder & Profile Updates require sign-in.',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: const Color(0xFFE65100),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Semantics(
+              button: true,
+              label: 'Sign in with Google to unlock all features',
+              child: TextButton(
+                onPressed: () => ref.read(authProvider.notifier).signIn(),
+                style: TextButton.styleFrom(
+                  foregroundColor: CivicPulseTheme.primary,
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: const Text(
+                  'Sign In',
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
