@@ -102,21 +102,29 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Row(
         children: [
-          // Logo/Brand
-          Image.asset('assets/images/logo.webp', height: 40),
-          const SizedBox(width: 12),
-          Text(
-            ref.tr('app_title'),
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                ),
+          // Logo — gap 3 fix: semantic label + image role
+          Semantics(
+            label: 'Election Dost logo',
+            image: true,
+            child: Image.asset('assets/images/logo.webp', height: 40),
           ),
-          Text(
-            '  |  ${ref.tr('civic_pulse')}',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.white.withValues(alpha: 0.7),
-                ),
+          const SizedBox(width: 12),
+          ExcludeSemantics(
+            child: Text(
+              ref.tr('app_title'),
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ),
+            ),
+          ),
+          ExcludeSemantics(
+            child: Text(
+              '  |  ${ref.tr('civic_pulse')}',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.white.withValues(alpha: 0.7),
+                  ),
+            ),
           ),
           const Spacer(),
           const LanguageSelector(),
@@ -133,8 +141,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             ),
           ),
           const SizedBox(width: 12),
-          const LanguageSelector(),
-          const SizedBox(width: 16),
           // Results button
           TextButton.icon(
             onPressed: () => context.go('/results'),
@@ -152,23 +158,31 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   Widget _buildSidebar(BuildContext context) {
-    return Container(
-      width: 220,
-      color: const Color(0xFF001B38), // Deep navy sidebar
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 24),
-          ..._navItems.map((item) => _SidebarNavItem(
-                item: item,
-                isSelected: _selectedNavIndex == item.index,
-                onTap: () {
-                  setState(() => _selectedNavIndex = item.index);
-                  if (item.index == 3) context.go('/results');
-                  if (item.index == 4) context.go('/dashboard'); // Settings redirect to home for now
-                },
-              )),
-        ],
+    // Gap 4: FocusTraversalGroup keeps Tab order contained within sidebar
+    return FocusTraversalGroup(
+      policy: OrderedTraversalPolicy(),
+      child: Semantics(
+        label: 'Navigation sidebar',
+        namesRoute: true,
+        child: Container(
+          width: 220,
+          color: const Color(0xFF001B38),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 24),
+              ..._navItems.map((item) => _SidebarNavItem(
+                    item: item,
+                    isSelected: _selectedNavIndex == item.index,
+                    onTap: () {
+                      setState(() => _selectedNavIndex = item.index);
+                      if (item.index == 3) context.go('/results');
+                      if (item.index == 4) context.go('/dashboard');
+                    },
+                  )),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -177,34 +191,50 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final user = ref.watch(authProvider);
     final isAnonymous = user?.isAnonymous ?? false;
     return Expanded(
-      child: Column(
-        children: [
-          // Anonymous guest upsell banner
-          if (isAnonymous) _buildGuestBanner(context),
-          // Welcome / context bar
-          if (messages.isEmpty) _buildWelcomeBanner(context, selectedLang),
-          // Quick action chips
-          QuickActionChips(onActionSelected: _sendMessage),
-          // Chat messages
-          Expanded(
-            child: Semantics(
-              label: 'Chat messages',
-              liveRegion: true,
-              child: messages.isEmpty
-                  ? _buildEmptyState(context)
-                  : ListView.builder(
-                      controller: _scrollController,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      itemCount: messages.length,
-                      itemBuilder: (context, index) {
-                        return ChatBubble(message: messages[index]);
-                      },
-                    ),
+      child: FocusTraversalGroup(
+        policy: OrderedTraversalPolicy(),
+        child: Column(
+          children: [
+            // Gap 5: skip-to-content — invisible but focusable by keyboard / screen reader
+            Semantics(
+              focusable: true,
+              label: 'Skip to chat messages',
+              hint: 'Activate to scroll directly to the message list',
+              onTap: () {
+                if (_scrollController.hasClients) {
+                  _scrollController.jumpTo(
+                      _scrollController.position.maxScrollExtent);
+                }
+              },
+              child: const SizedBox.shrink(),
             ),
-          ),
-          // Input area
-          _buildInputArea(context),
-        ],
+            // Anonymous guest upsell banner
+            if (isAnonymous) _buildGuestBanner(context),
+            // Welcome / context bar
+            if (messages.isEmpty) _buildWelcomeBanner(context, selectedLang),
+            // Quick action chips
+            QuickActionChips(onActionSelected: _sendMessage),
+            // Chat messages
+            Expanded(
+              child: Semantics(
+                label: 'Chat messages',
+                liveRegion: true,
+                child: messages.isEmpty
+                    ? _buildEmptyState(context)
+                    : ListView.builder(
+                        controller: _scrollController,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        itemCount: messages.length,
+                        itemBuilder: (context, index) {
+                          return ChatBubble(message: messages[index]);
+                        },
+                      ),
+              ),
+            ),
+            // Input area
+            _buildInputArea(context),
+          ],
+        ),
       ),
     );
   }
