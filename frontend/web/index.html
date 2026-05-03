@@ -4,15 +4,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#003366">
   <meta name="description" content="Election Dost – Your AI-powered civic assistant for Indian elections. Check voter eligibility, find your polling booth, and learn about the democratic process.">
-  <!-- CSP: frame-src explicitly permits the ECI results iframe; child-src covers web workers -->
+  <!-- CSP: gstatic.com is required for Flutter CanvasKit; frame-src permits ECI results -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self';
-                 script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://maps.googleapis.com;
-                 style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-                 font-src 'self' https://fonts.gstatic.com;
+                 script-src 'self' 'unsafe-inline' 'unsafe-eval'
+                   https://accounts.google.com
+                   https://maps.googleapis.com
+                   https://www.gstatic.com;
+                 style-src 'self' 'unsafe-inline'
+                   https://fonts.googleapis.com
+                   https://www.gstatic.com;
+                 font-src 'self'
+                   https://fonts.gstatic.com
+                   https://www.gstatic.com;
                  img-src 'self' data: blob: https:;
                  connect-src 'self' https: wss:;
-                 child-src 'self' blob:;
+                 child-src 'self' blob: https://www.gstatic.com;
+                 worker-src 'self' blob:;
                  frame-src 'self' https://results.eci.gov.in https://accounts.google.com;">
 
   <!--
