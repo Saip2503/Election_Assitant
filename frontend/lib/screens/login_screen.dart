@@ -142,23 +142,10 @@ class LoginScreen extends ConsumerWidget {
                             child: SizedBox(
                               width: double.infinity,
                               height: 56,
-                              child: ElevatedButton.icon(
+                              child: ElevatedButton(
                                 onPressed: () => ref
                                     .read(authProvider.notifier)
                                     .signIn(),
-                                icon: ExcludeSemantics(
-                                  child: Image.network(
-                                    'https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg',
-                                    height: 24,
-                                  ),
-                                ),
-                                label: Text(
-                                  ref.tr('login_google_full'),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.white,
                                   foregroundColor: Colors.black87,
@@ -168,6 +155,21 @@ class LoginScreen extends ConsumerWidget {
                                     side: const BorderSide(
                                         color: Color(0xFFE0E0E0)),
                                   ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    // Native Google 'G' — no SVG/network image needed
+                                    const _GoogleGIcon(),
+                                    const SizedBox(width: 12),
+                                    Text(
+                                      ref.tr('login_google_full'),
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -345,4 +347,69 @@ class _FeatureRow extends StatelessWidget {
       ),
     );
   }
+}
+
+// ── Native Google 'G' icon ────────────────────────────────────────────────────
+// Drawn entirely with Flutter widgets — no SVG or network image required.
+class _GoogleGIcon extends StatelessWidget {
+  const _GoogleGIcon();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 24,
+      height: 24,
+      child: CustomPaint(painter: _GoogleGPainter()),
+    );
+  }
+}
+
+class _GoogleGPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final cx = size.width / 2;
+    final cy = size.height / 2;
+    final r = size.width / 2;
+    final rect = Rect.fromCircle(center: Offset(cx, cy), radius: r);
+
+    // Colours per Google brand guidelines
+    const blue   = Color(0xFF4285F4);
+    const red    = Color(0xFFEA4335);
+    const yellow = Color(0xFFFBBC05);
+    const green  = Color(0xFF34A853);
+
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.22
+      ..strokeCap = StrokeCap.butt;
+
+    // Blue — top (right side)
+    paint.color = blue;
+    canvas.drawArc(rect, -0.52, 1.57, false, paint);
+
+    // Red — top-left
+    paint.color = red;
+    canvas.drawArc(rect, 1.05, 1.6, false, paint);
+
+    // Yellow — bottom-left
+    paint.color = yellow;
+    canvas.drawArc(rect, 2.65, 0.8, false, paint);
+
+    // Green — bottom-right
+    paint.color = green;
+    canvas.drawArc(rect, 3.45, 0.9, false, paint);
+
+    // Horizontal bar of the G (blue)
+    paint
+      ..color = blue
+      ..style = PaintingStyle.fill;
+    canvas.drawRect(
+      Rect.fromLTWH(cx, cy - size.height * 0.09,
+          r * 0.85, size.height * 0.18),
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

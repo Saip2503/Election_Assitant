@@ -59,11 +59,27 @@ class AuthNotifier extends StateNotifier<AppUser?> {
   );
 
   /// Full Google sign-in — unlocks all features.
+  /// NOTE: google_sign_in_web v0.12+ requires renderButton for FedCM.
+  /// The signIn() method is still functional but shows a deprecation warning.
+  /// Migration to renderButton is tracked as a future task.
   Future<void> signIn() async {
     try {
-      await _googleSignIn.signIn();
+      // Try silent sign-in first (returns existing session if available)
+      final silentAccount = await _googleSignIn.signInSilently();
+      if (silentAccount != null) {
+        state = AppUser.fromGoogle(silentAccount);
+        return;
+      }
+      // Fall back to interactive sign-in
+      // ignore: deprecated_member_use
+      final account = await _googleSignIn.signIn();
+      if (account != null) {
+        state = AppUser.fromGoogle(account);
+      }
     } catch (e) {
-      print('Google Sign-In Error: $e');
+      // FedCM may reject with NetworkError during local dev — safe to ignore.
+      // The user remains on the login screen where they can retry.
+      debugPrint('Google Sign-In: $e');
     }
   }
 

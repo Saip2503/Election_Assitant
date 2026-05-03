@@ -4,6 +4,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#003366">
   <meta name="description" content="Election Dost – Your AI-powered civic assistant for Indian elections. Check voter eligibility, find your polling booth, and learn about the democratic process.">
+  <!-- CSP: frame-src explicitly permits the ECI results iframe; child-src covers web workers -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self';
+                 script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://maps.googleapis.com;
+                 style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+                 font-src 'self' https://fonts.gstatic.com;
+                 img-src 'self' data: blob: https:;
+                 connect-src 'self' https: wss:;
+                 child-src 'self' blob:;
+                 frame-src 'self' https://results.eci.gov.in https://accounts.google.com;">
 
   <!--
     If you are serving your web app in a path other than the root, change the
