@@ -14,12 +14,12 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["Content-Security-Policy"] = (
             "default-src 'self'; "
             "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://*.google.com https://*.googleapis.com https://*.gstatic.com; "
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com; "
-            "font-src 'self' https://fonts.gstatic.com; "
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com https://*.gstatic.com; "
+            "font-src 'self' https://fonts.gstatic.com https://*.gstatic.com; "
             "img-src 'self' data: blob: https://*.googleusercontent.com https://www.gstatic.com https://upload.wikimedia.org https://*.googleapis.com https://*.gstatic.com; "
             "connect-src 'self' http://localhost:8080 https://*.google.com https://*.googleapis.com https://*.google-analytics.com https://*.gstatic.com https://upload.wikimedia.org https://*.googleusercontent.com; "
             "worker-src 'self' blob:; "
-            "child-src 'self' blob:; "
+            "child-src 'self' blob: https://*.gstatic.com; "
             "object-src 'none';"
         )
         return response
