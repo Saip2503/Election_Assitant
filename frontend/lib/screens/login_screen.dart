@@ -367,45 +367,58 @@ class _GoogleGIcon extends StatelessWidget {
 class _GoogleGPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final cx = size.width / 2;
-    final cy = size.height / 2;
-    final r = size.width / 2;
-    final rect = Rect.fromCircle(center: Offset(cx, cy), radius: r);
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2;
+    // Stroke width for the logo is roughly 22% of the width
+    final strokeWidth = size.width * 0.22;
+    // We adjust the drawing radius so strokes fit within the bounds
+    final drawRadius = radius - (strokeWidth / 2);
+
+    final rect = Rect.fromCircle(center: center, radius: drawRadius);
 
     // Colours per Google brand guidelines
-    const blue   = Color(0xFF4285F4);
-    const red    = Color(0xFFEA4335);
+    const blue = Color(0xFF4285F4);
+    const red = Color(0xFFEA4335);
     const yellow = Color(0xFFFBBC05);
-    const green  = Color(0xFF34A853);
+    const green = Color(0xFF34A853);
 
     final paint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = size.width * 0.22
+      ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.butt;
 
-    // Blue — top (right side)
-    paint.color = blue;
-    canvas.drawArc(rect, -0.52, 1.57, false, paint);
-
-    // Red — top-left
+    // Angles in radians. 0 is 3 o'clock.
+    
+    // Red — Top
     paint.color = red;
-    canvas.drawArc(rect, 1.05, 1.6, false, paint);
+    // From around 9:30 (roughly 3.5 rads) sweeping to 2 o'clock
+    canvas.drawArc(rect, 3.49, 1.92, false, paint);
 
-    // Yellow — bottom-left
+    // Yellow — Left
     paint.color = yellow;
-    canvas.drawArc(rect, 2.65, 0.8, false, paint);
+    // From around 7 o'clock sweeping up to 9:30
+    canvas.drawArc(rect, 2.53, 0.96, false, paint);
 
-    // Green — bottom-right
+    // Green — Bottom
     paint.color = green;
-    canvas.drawArc(rect, 3.45, 0.9, false, paint);
+    // From around 4 o'clock sweeping to 7 o'clock
+    canvas.drawArc(rect, 0.79, 1.74, false, paint);
+
+    // Blue — Right (and crossbar)
+    paint.color = blue;
+    // From 3 o'clock sweeping down to 4 o'clock
+    canvas.drawArc(rect, 0.0, 0.79, false, paint);
 
     // Horizontal bar of the G (blue)
-    paint
-      ..color = blue
-      ..style = PaintingStyle.fill;
+    paint.style = PaintingStyle.fill;
+    // The bar starts from the center and goes right
     canvas.drawRect(
-      Rect.fromLTWH(cx, cy - size.height * 0.09,
-          r * 0.85, size.height * 0.18),
+      Rect.fromLTWH(
+        center.dx,
+        center.dy - (strokeWidth / 2),
+        drawRadius + (strokeWidth / 2),
+        strokeWidth,
+      ),
       paint,
     );
   }
