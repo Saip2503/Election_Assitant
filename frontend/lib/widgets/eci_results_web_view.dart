@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html;
+import 'package:url_launcher/url_launcher.dart';
 import '../theme/civic_pulse_theme.dart';
 
 /// The ECI results page sends X-Frame-Options: DENY so it cannot be embedded
@@ -9,8 +8,12 @@ import '../theme/civic_pulse_theme.dart';
 class ECIResultsWebView extends StatelessWidget {
   const ECIResultsWebView({super.key});
 
-  static void _openUrl(String url) =>
-      html.window.open(url, '_blank');
+  static Future<void> _openUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, webOnlyWindowName: '_blank');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

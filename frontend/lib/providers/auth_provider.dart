@@ -79,7 +79,7 @@ class AuthNotifier extends StateNotifier<AppUser?> {
     } catch (e) {
       // FedCM may reject with NetworkError during local dev — safe to ignore.
       // The user remains on the login screen where they can retry.
-      debugPrint('Google Sign-In: $e');
+      print('Google Sign-In: $e');
     }
   }
 
